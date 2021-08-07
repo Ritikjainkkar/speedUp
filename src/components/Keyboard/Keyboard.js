@@ -1,6 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import useDate from '../TimeHook'
+import ShowTime from '../ShowTime'
 import './styles.css'
 export default function Keyboard() {
+  const [keyCount, setKeyCount] = useState(0);
+  const { sec } = useDate();
+  console.log(keyCount);
   useEffect(() => {
     targetRandomKey();
   },[])
@@ -22,7 +27,6 @@ function getRandomKey() {
 
 function targetRandomKey() {
   const key = getRandomKey();
-  console.log(key, document,document.getElementById("H"));
   try{
     document.getElementById(key).className += " selected";
   }
@@ -51,9 +55,9 @@ document.addEventListener("keyup", event => {
     keyElement.classList.remove("hit")
   })
   if (keyPressed === highlightedKey.innerHTML) {
+    setKeyCount(keyCount+1);
     timestamps.unshift(getTimestamp());
     const elapsedTime = timestamps[0] - timestamps[1];
-    console.log(`Character per minute ${60/elapsedTime}`)
     highlightedKey.classList.remove("selected");
     targetRandomKey();
   } 
@@ -61,7 +65,7 @@ document.addEventListener("keyup", event => {
 
   return (
     <div>
-      <h1 className="title">Eyes on the screen</h1>
+      <h1 className="title">Eyes on the screen <h1>Time {60 - sec} &nbsp;&nbsp;&nbsp; Last Avg. {keyCount} </h1></h1>
         <div className="keyboard">
           <ul className="row row-0">
             <li className="pinky" id="esc">ESC</li>
