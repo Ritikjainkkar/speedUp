@@ -9,7 +9,7 @@ const useDate = () => {
       else { 
         setSec(sec+1);
       }
-    }, 5000);
+    }, 1000);
     return () => { clearInterval(interval) };
   })
 

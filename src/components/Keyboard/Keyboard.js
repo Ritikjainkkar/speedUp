@@ -1,17 +1,26 @@
-import React, { useEffect, useState } from 'react'
+
+import React,  { useEffect, useState } from 'react'
 import useDate from '../TimeHook'
-import ShowTime from '../ShowTime'
 import './styles.css'
 export default function Keyboard() {
-  const [keyCount, setKeyCount] = useState(0);
   const { sec } = useDate();
-  console.log(keyCount);
-  useEffect(() => {
+  const [count, setCount] = useState(0);
+  useEffect(() => { 
+    setInterval(() => {
+      setCount(0);
+    }, 61000)
+    document.addEventListener("keyup", handler);
     targetRandomKey();
   },[])
   const keys = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
 
 const timestamps = [];
+
+function countHandlers() {
+  setCount(count => {
+    return count+1;
+  });
+}
 
 timestamps.unshift(getTimestamp());
 
@@ -26,6 +35,7 @@ function getRandomKey() {
 }
 
 function targetRandomKey() {
+  console.log("Random Key");
   const key = getRandomKey();
   try{
     document.getElementById(key).className += " selected";
@@ -35,12 +45,10 @@ function targetRandomKey() {
   }
   
 }
-
 function getTimestamp() {
   return Math.floor(Date.now() / 1000)
 }
-
-document.addEventListener("keyup", event => {
+function handler(event) {
   var keyPressed = String.fromCharCode(event.keyCode);
   if(keyPressed.trim().length === 0) {
     keyPressed = event.code.toLocaleLowerCase();
@@ -55,17 +63,18 @@ document.addEventListener("keyup", event => {
     keyElement.classList.remove("hit")
   })
   if (keyPressed === highlightedKey.innerHTML) {
-    setKeyCount(keyCount+1);
     timestamps.unshift(getTimestamp());
     const elapsedTime = timestamps[0] - timestamps[1];
     highlightedKey.classList.remove("selected");
     targetRandomKey();
+    countHandlers()
   } 
-})
+} 
+
 
   return (
     <div>
-      <h1 className="title">Eyes on the screen <h1>Time {60 - sec} &nbsp;&nbsp;&nbsp; Last Avg. {keyCount} </h1></h1>
+      <h1 className="title"> Eyes on the screen <h3>Time { 60 - sec } &nbsp;&nbsp;&nbsp; Last Avg. { count } </h3></h1>
         <div className="keyboard">
           <ul className="row row-0">
             <li className="pinky" id="esc">ESC</li>
