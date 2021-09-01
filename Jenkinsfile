@@ -1,29 +1,33 @@
+def gvz
+
 pipeline {
   agent any
-  
   stages {
+    stage("init") {
+      steps {
+        script {
+         gv = load "script.groovy" 
+        }
+      }
+    }
+
     stage("build") {
-      
       steps{
-        echo 'build the application...'
-        sh 'npm install'
+        script {
+          gv.buildApp()
+        }
       }
     }
     
     stage("build image") {
-      
       steps{
-        echo 'build image the application...'
-        withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-          sh 'docker build -t temporaryrk/demo:sp-2.0 .'
-          sh "echo $PASS | docker login -u $USER --password-stdin"
-          sh 'docker push temporaryrk/demo:sp-2.0'
+        script {
+          gv.buildImg()
         }
       }
     }
     
     stage("deploy") {
-      
       steps{
         echo 'deploying the application...'
       }
