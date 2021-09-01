@@ -5,14 +5,20 @@ pipeline {
     stage("build") {
       
       steps{
-        sh 'npm --version'
+        echo 'build the application...'
+        sh 'npm install'
       }
     }
     
-    stage("test") {
+    stage("build image") {
       
       steps{
-        echo 'testing the application...'
+        echo 'build image the application...'
+        withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+          sh 'docker build -t temporaryrk/demo:sp-2.0'
+          sh "echo $PASS | docker login -u $USER --password-stdin"
+          sh 'docker push temporaryrk/demo:sp-2.0'
+        }
       }
     }
     
