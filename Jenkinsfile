@@ -23,7 +23,7 @@ pipeline {
     stage("build image") {
       steps{
         script {
-          echo 'build image the application...'
+          echo 'build image the application...  '
           withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
             sh 'docker build -t temporaryrk/demo:sp-3.0 .'
             sh "echo $PASS | docker login -u $USER --password-stdin"
