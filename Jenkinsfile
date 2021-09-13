@@ -27,7 +27,7 @@ pipeline {
           withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
             sh 'docker build -t temporaryrk/demo:sp-4.0 .'
             sh "echo $PASS | docker login -u $USER --password-stdin"
-            sh 'docker push temporaryrk/demo:sp-3.0'
+            sh 'docker push temporaryrk/demo:sp-4.0'
           }
         }
       }
@@ -35,7 +35,10 @@ pipeline {
     
     stage("deploy") {
       steps{
-        echo 'deploying the application...'
+        def dockerCMD = "docker run -p 3080:3080 -d temporaryrk/demo:sp-4.0"
+        sshagent(['aws-avinash']) {
+          sh "ssh -o StrictHostKeyChecking=no ubuntu@18.223.195.108 ${dockerCMD}"
+        }
       }
     }
     
