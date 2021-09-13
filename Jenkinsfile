@@ -35,9 +35,11 @@ pipeline {
     
     stage("deploy") {
       steps{
-        def dockerCMD = "docker run -p 3080:3080 -d temporaryrk/demo:sp-4.0"
-        sshagent(['aws-avinash']) {
-          sh "ssh -o StrictHostKeyChecking=no ubuntu@18.223.195.108 ${dockerCMD}"
+        script {
+          def dockerCMD = "docker run -p 3080:3080 -d temporaryrk/demo:sp-4.0"
+          sshagent(['aws-avinash']) {
+            sh "ssh -o StrictHostKeyChecking=no ubuntu@18.223.195.108 ${dockerCMD}"
+          }
         }
       }
     }
